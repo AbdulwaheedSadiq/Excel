@@ -1,0 +1,37 @@
+USE [Python]
+GO
+/****** Object:  StoredProcedure [dbo].[excelReport]    Script Date: 20-Mar-23 1:36:53 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+
+ALTER PROCEDURE [dbo].[excelReport]
+@docType varchar(50)
+AS
+BEGIN
+			--not necessary
+	IF (NOT EXISTS (select  * from tempdb.dbo.sysobjects o where o.xtype in ('U')  and o.id = object_id(N'tempdb..##excel_data'))) 
+		BEGIN
+   			CREATE TABLE ##excel_data (docType VARCHAR(50));
+
+		END
+    IF (EXISTS (select  * from tempdb.dbo.sysobjects o where o.xtype in ('U')  and o.id = object_id(N'tempdb..##excel_data'))) 
+		BEGIN
+			 IF (NOT EXISTS (select  * from ##excel_data where docType = @docType )) 
+			 BEGIN
+			 Insert into ##excel_data values (@docType);
+			 END			
+		END
+
+END
+
+--select * from ##excel_data;
+--delete from dbo.passport;
+-- drop table ##excel_data
+
+
+   
+
+   
